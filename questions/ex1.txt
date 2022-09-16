@@ -1,4 +1,4 @@
-Exo 2
+Exo 1
 
 # Given a dict of {key, prev_value, new_value} objects, 
 # Write a function satisfy which returns a struct ArraySatisfied {array, size_array} which contains an array of the sum A=key+prev_value+new_value 

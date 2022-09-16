@@ -1,0 +1,6 @@
+Exo 2
+
+We have [N1, N2, N3, N4, N5] : bases
+#of indices n such that syracuse term yields 1 in the range of the first 100 terms : [res1, res2, res3, res4, res5]
+
+Output : [N_max, res_max]
