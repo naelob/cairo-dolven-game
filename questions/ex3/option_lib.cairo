@@ -4,6 +4,8 @@ from starkware.starknet.common.syscalls import (
     get_block_timestamp,
 )
 
+from starkware.cairo.common.uint256 import Uint256
+
 from starkware.cairo.common.math import (
     assert_not_equal,
     assert_lt,
@@ -18,6 +20,7 @@ from starkware.starknet.common.syscalls import (
 from starkware.cairo.common.bool import TRUE, FALSE
 
 from openzeppelin.token.erc721.library import ERC721
+from openzeppelin.token.erc20.library import ERC20
 
 ############
 # EVENTS
@@ -57,7 +60,7 @@ func underlying_nft() -> (address: felt) :
 end
 
 @storage_var
-func underlying_token_id() -> (id: felt) :
+func underlying_token_id() -> (id: Uint256) :
 end
 
 @storage_var
@@ -124,7 +127,12 @@ namespace Option:
         let (premium) = premium.read()
         
         # transfer premium to seller
-        ERC20.safeTransferFrom(caller, seller, premium)
+        let (success) = ERC20.transferFrom(caller, seller, premium)
+
+        with_attr error_message("transfer failed"):
+            assert success = 1
+        end
+
         buyer.write(caller)
         OptionPurchased.emit(caller)
     end
@@ -141,7 +149,11 @@ namespace Option:
 
         let (strike) = strike.read()
         # transfer strike to seller
-        ERC20.safeTransferFrom(caller, seller, strike)
+        let (success) = ERC20.transferFrom(caller, seller, strike)
+
+        with_attr error_message("transfer failed"):
+            assert success = 1
+        end
 
         let (contract_address) = get_contract_address()
         let (token_id) = underlying_token_id.read()

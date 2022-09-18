@@ -13,6 +13,8 @@ from starkware.starknet.common.syscalls import (
     get_caller_address,
 )
 
+from starkware.cairo.common.uint256 import Uint256
+
 
 ############
 #  VIEW 
@@ -42,7 +44,7 @@ end
 
 @external
 func deposit{
-}(underlying : felt, token_id : felt):
+}(underlying : felt, token_id : Uint256):
     _only_seller()
     Option.deposit()
     return ()
