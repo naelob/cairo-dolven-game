@@ -4,7 +4,10 @@ from starkware.starknet.common.syscalls import (
     get_block_timestamp,
 )
 
-from starkware.cairo.common.uint256 import Uint256
+from starkware.cairo.common.uint256 import (
+    Uint256, 
+    split_64
+)
 
 from starkware.cairo.common.math import (
     assert_not_equal,
@@ -60,7 +63,7 @@ func underlying_nft() -> (address: felt) :
 end
 
 @storage_var
-func underlying_token_id() -> (id: Uint256) :
+func underlying_token_id() -> (id: felt) :
 end
 
 @storage_var
@@ -105,7 +108,11 @@ namespace Option:
 
         let (caller) = get_caller_address()
         let (contract_address) = get_contract_address()
-        ERC721.transferFrom(caller,contract_address, token_id)
+
+        let (low, high) = split_64(tokenId)
+        let token_id = Uint256(low, high)
+
+        ERC721.transferFrom(caller, contract_address, token_id)
 
         NftDeposited.emit(caller, underlying, token_id)
     end
@@ -156,10 +163,13 @@ namespace Option:
         end
 
         let (contract_address) = get_contract_address()
+        
         let (token_id) = underlying_token_id.read()
+        let (low, high) = split_64(tokenId)
+        let _token_id = Uint256(low, high)
 
         #Transfer underlying NFT to the buyer
-        ERC721.transferFrom(contract_address, caller, token_id)
+        ERC721.transferFrom(contract_address, caller, _token_id)
 
         let (caller) = get_caller_address()
         OptionExercised.emit(caller);
@@ -184,8 +194,12 @@ namespace Option:
         #Transfer NFT back to seller
         let (contract_address) = get_contract_address()
         let (caller) = get_caller_address()
+        
         let (token_id) = underlying_token_id.read()
-        ERC721.transferFrom(contract_address, caller, token_id);
+        let (low, high) = split_64(tokenId)
+        let _token_id = Uint256(low, high)
+
+        ERC721.transferFrom(contract_address, caller, _token_id);
         is_nft_deposited.write(FALSE)
 
         OptionClosed.emit(caller)

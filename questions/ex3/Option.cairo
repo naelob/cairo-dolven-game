@@ -44,7 +44,7 @@ end
 
 @external
 func deposit{
-}(underlying : felt, token_id : Uint256):
+}(underlying : felt, token_id : felt):
     _only_seller()
     Option.deposit()
     return ()
