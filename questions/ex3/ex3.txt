@@ -8,12 +8,125 @@ To have before exercise :
     - an ERC721 token which will be used for testing purposes, you are free to use the one you want
     - an Argent account to interact with contracts and for testing purposes
 
+Our goal is to make an Option contract where users can both sell/buy an option contract with an NFT as underlying asset
+
 STEP 1 :
-Write an Option contract
+Write an Option contract :
+    1. Read this article from Open Zeppelin : https://docs.openzeppelin.com/contracts-cairo/0.3.2/extensibility#libraries
+        and create 2 files (library & contract) that follow the same practice
+    2. Once you have lib.cairo and Option.cairo set up, write the following functions :
 
-STEP 2 :
+        Inside lib.cairo :
+
+            IMPORTS NEEDED FOR THE FILE :
+
+                from starkware.starknet.common.syscalls import (
+                    get_block_timestamp
+                )
+
+                from starkware.cairo.common.cairo_builtins import HashBuiltin
+
+                from starkware.cairo.common.uint256 import (
+                    Uint256, 
+                    split_64
+                )
+
+                from starkware.cairo.common.math import (
+                    assert_not_equal,
+                    assert_lt,
+                    assert_not_zero
+                )
+
+                from starkware.starknet.common.syscalls import (
+                    get_caller_address,
+                    get_contract_address
+                )
+
+                from starkware.cairo.common.bool import TRUE, FALSE
+
+                from openzeppelin.token.erc20 import IERC20
+                from openzeppelin.token.erc721 import IERC721
+
+            EVENTS :
+                - NftDeposited
+                - OptionPurchased
+                - OptionExercised
+                - OptionClosed
+
+            STORAGE :
+                - seller
+                - buyer
+                - underlying_nft
+                - underlying_token_id
+                - is_nft_deposited
+                - quote_token
+                - strike
+                - premium
+                - expiry
+
+            INSIDE NAMESPACE :
+                - deposit(underlying, token_id) : The function should receive the NFT from the caller i.e the seller of the option contract and lock it as underlying.
+                    [check if NFT has already been deposited, if yes should revert]
+                
+
+                - purchase_call_option : The function transfers the premium from the caller of the contract i.e the buyer to the seller of the option contract.
+                    [check if NFT has first been deposited, if no should revert + check if option has not been bought, if yes should revert]
+
+                - exercise_option : The function transfers the strike to the seller of the option contract and then the NFT is transfered to the buyer which is exercising the contract.
+                    [check if option has expired, if yes should revert]
+
+                - close_option : The function transfers the NFT undrlying back to seller of the option contract
+                    [check if option has expired, if not should revert + check if there is a buyer != 0, if yes should revert]
+
+                HELP : Open Zeppelin contracts use Uint256 as a type for token_id inside ERC721. 
+                    Inside the functions where you call OpenZeppelin functions just use this simple trick to convert a felt to Uint256 :
+                    
+                    let (low, high) = split_64(token_id)
+                    let _token_id = Uint256(low, high) #this one is then of type Uint256
+
+                    where token_id is your token_id of type felt 
+
+
+                - get_underlying
+                - get_underlying_token_id
+                - get_seller
+                - get_buyer
+                - get_quote_token
+                - get_strike
+                - get_premium
+                - get_expiry
+                - get_if_nft_deposited
+
+        Inside Option.cairo : 
+
+            - constructor(_quote_token, _strike, _premium, _expiry) [must set the seller of the contract as the caller of the constructor]
+            - get_underlying
+            - get_underlying_token_id
+            - get_seller
+            - get_buyer
+            - get_quote_token
+            - get_strike
+            - get_premium
+            - get_expiry
+            - get_if_nft_deposited
+            - deposit(underlying, token_id) : [must be called only by the seller of the option]
+            - purchase_call_option
+            - exercise_option : [must be called only by the buyer of the option]
+            - close_option  : [must be called only by the seller of the option]
+            - _only_seller (modifier)
+            - _only_buyer (modifier)
+        (you must know which visibility each function should have)
+        (hint if the user wants help : DONT FORGET THAT YOU SHOULD WRITE THESE FUNCTIONS BY CALLING THEIR IMPLEMENTATION IN lib.cairo)
 
 
 
-STEP 3 :
-Find errors in the given contracts and fix them
+STEP 3 (bonus) :
+    - Implement Interface IOption.cairo
+    - Unlike exercising the option contract without checking the spot price of the NFT which is dumb,
+        feel free to add a check mecanism where you can only exercise if spot price of NFT is above the strike,
+        that way even a mistake made by the user can be fixed with this simple check if he mistakenly called the exercise function while the NFT spot is below the strike. 
+        
+    Hint if user doesnt have ideas 
+    A possible mecanism :
+        - a mock storage var : nft_spot_price
+        - a check inside exercise function

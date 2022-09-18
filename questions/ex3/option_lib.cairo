@@ -14,7 +14,7 @@ from starkware.cairo.common.uint256 import (
 from starkware.cairo.common.math import (
     assert_not_equal,
     assert_lt,
-    assert_not_zero
+    assert_not_zero,
 )
 
 from starkware.starknet.common.syscalls import (
@@ -102,7 +102,6 @@ namespace Option:
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
     }(underlying : felt, token_id : felt):
-        #_only_seller()
         with_attr error_message("Already deposited"):
             let (bool) = is_nft_deposited.read()
             assert bool = FALSE
@@ -146,7 +145,7 @@ namespace Option:
         let (success) = IERC20.transferFrom(contract_address=TOKEN, sender=caller, recipient=seller, amount=premium)
 
         with_attr error_message("transfer failed"):
-            assert success = 1
+            assert success = TRUE
         end
 
         buyer.write(caller)
@@ -159,7 +158,6 @@ namespace Option:
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
     }():
-        #_only_buyer()
 
         let (timestamp) = get_block_timestamp()
         let (expiry) = expiry.read()
@@ -172,7 +170,7 @@ namespace Option:
         let (success) = IERC20.transferFrom(contract_address=TOKEN, sender=caller, recipient=seller, amount=strike)
 
         with_attr error_message("transfer failed"):
-            assert success = 1
+            assert success = TRUE
         end
 
         let (contract_address) = get_contract_address()
@@ -192,7 +190,6 @@ namespace Option:
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
     }():
-        #_only_seller()
         let (timestamp) = get_block_timestamp()
         let (expiry) = expiry.read()
         
@@ -202,7 +199,7 @@ namespace Option:
         
         let (buyer) = buyer.read()
         with_attr error_message("Option has not expired yet (2)"):
-            assert_not_zero(buyer)
+            assert buyer = 0
         end 
 
         #Transfer NFT back to seller
@@ -211,7 +208,7 @@ namespace Option:
         
         let (token_id) = underlying_token_id.read()
         let (low, high) = split_64(tokenId)
-        let _token_id = Uint256(low, high)
+        let _token_id  = Uint256(low, high)
 
         IERC721.transferFrom(contract_address=NFT, from_=contract_address, to=caller, tokenId=_token_id)
 
