@@ -16,7 +16,7 @@ struct BaseIndices :
     member amount_of_indices : felt
 end
 
-func syracuse{
+func collatz{
     range_check_ptr,
     bitwise_ptr : BitwiseBuiltin*,
     output_ptr : felt*
@@ -92,11 +92,11 @@ func _get_amount_indices{
     alloc_locals
 
     local count_zero = 0
-    let (sol) = _do_syracuse{count=count_zero, bitwise_ptr=bitwise_ptr}(prev=N, limit=countdown)
+    let (sol) = _do_collatz{count=count_zero, bitwise_ptr=bitwise_ptr}(prev=N, limit=countdown)
     return (res=sol)
 end
 
-func _do_syracuse{
+func _do_collatz{
     count : felt, range_check_ptr, bitwise_ptr : BitwiseBuiltin*, output_ptr : felt*
 }(prev : felt, limit : felt) -> (res_count : felt):
     alloc_locals
@@ -110,18 +110,18 @@ func _do_syracuse{
         local new_val = prev / 2
         if new_val == 1:
             local new_count = count + 1
-            return _do_syracuse{count=new_count, bitwise_ptr=bitwise_ptr}(prev=new_val, limit=limit-1)
+            return _do_collatz{count=new_count, bitwise_ptr=bitwise_ptr}(prev=new_val, limit=limit-1)
         end 
-        return _do_syracuse{count=count, bitwise_ptr=bitwise_ptr}(prev=new_val, limit=limit-1)
+        return _do_collatz{count=count, bitwise_ptr=bitwise_ptr}(prev=new_val, limit=limit-1)
     end
 
     local new_val = prev * 3 + 1
 
     if new_val == 1:
         local new_count = count + 1 
-        return _do_syracuse{count=new_count, bitwise_ptr=bitwise_ptr}(prev=new_val, limit=limit-1)
+        return _do_collatz{count=new_count, bitwise_ptr=bitwise_ptr}(prev=new_val, limit=limit-1)
     end 
-    return _do_syracuse{count=count, bitwise_ptr=bitwise_ptr}(prev=new_val, limit=limit-1)
+    return _do_collatz{count=count, bitwise_ptr=bitwise_ptr}(prev=new_val, limit=limit-1)
 end
 
 func main{
@@ -133,7 +133,7 @@ func main{
     ) = (15, 2, 199, 11)
     let (__fp__, _) = get_fp_and_pc()
 
-    let (res : BaseIndices) = syracuse(
+    let (res : BaseIndices) = collatz(
         bases_len = 4, bases = cast(&list, felt*), range=20
     )
     serialize_word(res.base)

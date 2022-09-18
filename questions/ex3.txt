@@ -1,0 +1,15 @@
+
+Write a contract that create an option contract for NFT's (ERC721)
+
+The goal is to allow both parties (the seller and the buyer) to settle options contracts on NFT's.
+
+STEP 1 :
+Write an Option contract
+
+STEP 2 :
+Get a list of options contracts opened for a list of users
+Get a trace of contracts opened/closes => openInterest
+
+STEP 3 :
+Update the merkle tree each time a user open/close a contract.
+
