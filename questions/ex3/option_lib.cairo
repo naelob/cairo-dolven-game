@@ -87,10 +87,6 @@ end
 func expiry() -> (res: felt) :
 end
 
-@storage_var
-func quote_token() -> (token: felt) :
-end
-
 
 namespace Option:
     
@@ -120,8 +116,7 @@ namespace Option:
     func purchase_call_option{}():
         let (buyer) = buyer.read()
         with_attr error_message("Option already purchased"):
-            let (res) = assert_not_zero(buyer)
-            assert res = 0
+            assert_not_zero(buyer)
         end
 
         with_attr error_message("No NFT deposited yet"):
@@ -150,8 +145,7 @@ namespace Option:
         let (timestamp) = get_block_timestamp()
         let (expiry) = expiry.read()
         with_attr error_message("Option expired"):
-            let (res) = assert_lt(timestamp, expiry)
-            assert res = 1
+            assert_lt(timestamp, expiry)
         end
 
         let (strike) = strike.read()
@@ -181,14 +175,12 @@ namespace Option:
         let (expiry) = expiry.read()
         
         with_attr error_message("Option has not expired yet (1)"):
-            let (res) = assert_lt(expiry, timestamp)
-            assert res = 1
+            assert_lt(expiry, timestamp)
         end 
         
         let (buyer) = buyer.read()
         with_attr error_message("Option has not expired yet (2)"):
-            let (res) = assert_not_zero(buyer)
-            assert res = 0
+            assert_not_zero(buyer)
         end 
 
         #Transfer NFT back to seller
@@ -205,6 +197,50 @@ namespace Option:
         OptionClosed.emit(caller)
     end
 
+    func get_underlying{}() -> (res : felt):
+        let (res) = underlying_nft.read()
+        return (res=res)
+    end
+
+    func get_underlying_token_id{}() -> (res : felt):
+        let (res) = underlying_token_id.read()
+        return (res=res)
+    end
+
+    func get_strike{}() -> (res : felt):
+        let (res) = strike.read()
+        return (res=res)
+    end
+
+    func get_expiry{}() -> (res : felt):
+        let (res) = expiry.read()
+        return (res=res)
+    end
+
+    func get_premium{}() -> (res : felt):
+        let (res) = premium.read()
+        return (res=res)
+    end
+
+    func get_quote_token{}() -> (res : felt):
+        let (res) = quote_token.read()
+        return (res=res)
+    end
+
+    func get_if_nft_deposited{}() -> (res : felt):
+        let (res) = is_nft_deposited.read()
+        return (res=res)
+    end
+
+    func get_seller{}() -> (res : felt):
+        let (res) = seller.read()
+        return (res=res)
+    end
+
+    func get_buyer{}() -> (res : felt):
+        let (res) = buyer.read()
+        return (res=res)
+    end
 
 end
 
@@ -212,8 +248,7 @@ end
     #with_attr error_message("only seller can deposit NFT"):
      #   let (caller) = get_caller_address()
      #   let (seller) = seller.read()
-     #   let (res) = assert_not_equal(caller, seller)
-     #  assert res = 0
+     #   assert_not_equal(caller, seller)
     #end
 #end
 
@@ -221,7 +256,6 @@ end
   #  with_attr error_message("only buyer can exercise Option"):
   #      let (caller) = get_caller_address()
   #      let (buyer) = buyer.read()
-  #      let (res) = assert_not_equal(caller, buyer)
-  #      assert res = 0
+  #      assert_not_equal(caller, buyer)
   #  end
 #end
