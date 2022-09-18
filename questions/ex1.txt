@@ -1,10 +1,67 @@
 Exo 1
 
-Syracuse 
-We have [N1, N2, N3, N4, N5] : bases
-#of indices n such that syracuse term yields 1 in the range of the first 100 terms : [res1, res2, res3, res4, res5]
+Collatz conjecture
 
-Output : [N_max, res_max]
+The Collatz conjecture is: This process will eventually reach the number 1, regardless of which positive integer is chosen initially.
+
+The sequence is defined as :
+
+- initial number called N0 = u_0
+
+- for all natural number p : 
+    - u_p+1 = u_p / 2 if u_p is even
+    - u_p+1 = (3 * u_p) + 1 otherwise
+
+Write a function called collatz(bases_len, bases, range) -> (res)
+that take a bases array, a range, the size of bases array and output the couple (N_max, res_max) which represent the N_max amongst the bases array that yield the most 1's between [0,range] for the collatz sequence (res_max).
+
+Initially we choose :
+
+- an array of positive numbers called :
+
+bases : [N1, N2, N3, N4, N5,... , Np], for p a natural number without 0 i.e inside [1, 2, 3, 4, ....]
+
+- the size of the bases array :
+
+bases_len
+
+- the range we want to yield the n-th term of collatz sequence :
+
+range 
+
+Output : 
+
+res : (N_max, res_max), you may want to use a struct type to represent these two values
+example implementation for the couple representation :  struct your_struct {N, res}
+
+Misc := Each res inside the couple (N, res) corresponds to the number of terms that yields 1 inside the range provided
+
+
+The goal is to output the couple (N_max, res_max) where N_max is the initial positive number that yields the bigger amount of 1's in the range provided.
+
+Example : 
+
+bases : (15, 2, 199, 11)
+bases_len : 4
+range : 20
+
+output : (2,7)
+Here 2 is the initial number from the list bases that yields the most 1's for the collatz sequence for each collatz term yielded between 0 and 20.
+For initial value 2 as the first term, we get 7 values equal to 1 between [0,20]
+
+If we try for 15 as the initial positive number  : 
+
+term 0 : 15
+term 1 : 46
+term 2 : 23
+term 3 : 70
+....
+....
+term 17 : 1
+....
+term 20 : 1
+
+In this case for 15 => we get (15, 2) as the number 1 is shown twice for the range [0, 20]
 
 
 
