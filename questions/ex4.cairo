@@ -53,6 +53,9 @@ func wizard{
         sum_c=sum_c
     }(array=col, size=size)
 
+    #serialize_word(sum_tmp_row)
+    #serialize_word(sum_tmp_col)
+
     local new_count : felt = sum_tmp_col
     # check if row and col are the same val
     
@@ -76,7 +79,6 @@ func wizard{
         assert sum_diff = 0
     end
 
-    #serialize_word(sum_tmp)
     return wizard{output_ptr=output_ptr,range_check_ptr=range_check_ptr, count=new_count}(array_len=array_len - 1, array_row=array_row + Row.SIZE, array_col=array_col + Col.SIZE)
 end
 
@@ -178,5 +180,7 @@ func main{
     }(
         array_len = 3, array_row = array_row, array_col=array_col
     )
+
+    serialize_word(res)
     return ()
 end
