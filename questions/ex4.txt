@@ -1,0 +1,23 @@
+Write a function called wizard which takes a matrix and returns 1 if the matrix is a wizard.
+A matrix is a wizard if and only if the sum of each single of both its column and rows yields separately the same value.
+
+Example : 
+
+A = [
+    2, 7, 6
+    9, 5, 1
+    4, 3, 8
+]
+A is a wizard matrix as :
+
+    ROWS
+    2 + 7 + 6 = 15
+    9 + 5 + 1 = 15
+    4 + 3 + 8 = 15
+
+    COLUMNS
+    2 + 9 + 4 = 15
+    7 + 5 + 3 = 15 
+    6 + 1 + 8 = 15
+    
+Everything yields the same value
