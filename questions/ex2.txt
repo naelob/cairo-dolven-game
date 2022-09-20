@@ -1,35 +1,40 @@
 
 Exo 2
 
-# Given a dict of {key, prev_value, new_value} objects, 
-# Write a function satisfy which returns a struct ArraySatisfied {array, size_array} which contains an array of the sum A=key+prev_value+new_value 
-# for each object inside the dict if and only if (key, prev_value, new_value) is a solution root of the polynomial x**3 + y**2 + z
+Given a dict of {key, prev_value, new_value} objects, 
+Write a function satisfy(array_len, numbers_array) 
+which returns a struct ArraySatisfied {array, size_array} 
+which contains an array of the sum A = key + prev_value + new_value 
+for each object inside the dict if and only if (key, prev_value, new_value) is a solution root of the polynomial x**3 + y**2 + z
 
-# Hint: 
-#   The array must not contain any duplicate values  
-#   If multiple values associated with a same key are found, you should only get the first prev_value and the last new_value for this key
-
-
-# Input : 
-#           array_len -> size of the input array
-#           array -> input array in the form (key, prev, next, key1, prev1, next1, ....)
-
-# Output :
-#           array_struct -> ArraySatisfied struct in the form {array, size_array} where array contains only the sum of objects that satisfy the statement
+Hint: 
+    The array must not contain any duplicate values  
+    If multiple values associated with a same key are found, you should only get the first prev_value and the last new_value for this key
 
 
-# Example :
-# Dict :
-# {key : 0, prev: 2, next : 199} , {key : 11, prev: 1, next : 66}, {key : 0, prev: 199, next : -4}
-# {key : 11, prev: 66, next : 66}, {key : 18, prev: 78, next : -11916}, {key : 11, prev: 66, next : 22}
+Input : 
+    array_len -> size of the input array
+    array -> input array in the form (key, prev, next, key1, prev1, next1, ....)
 
-# Input Array Mathcing the Dict :
-# (0, 2, 199, 11, 1, 66, 0, 199, -4, 11, 66, 66, 18, 78, -11916, 11, 66, 22)
-
+ Output :
+    array_struct -> ArraySatisfied struct in the form {array, size_array} where array contains only the sum of objects that satisfy the statement
 
 
-# output : [-2, -11820] 
-# explanation :
-#   updated dict values w/o duplicate keys : {key : 0, prev: 2, next : -4}, {key : 11, prev: 1, next : 22}, {key : 18, prev: 78, next : -11916}
-#   dict values where (x=key, y=prev, z=next) satisfy the statement x**2 + y**3 + z : {key : 0, prev: 2, next : -4}, {key : 18, prev: 78, next : -11916}
-#   output : [ 2 + (-4), 18 + 78 + (-11916) ] 
+Example :
+
+Dict :
+{key : 0, prev: 2, next : 199} , {key : 11, prev: 1, next : 66}, {key : 0, prev: 199, next : -4}
+{key : 11, prev: 66, next : 66}, {key : 18, prev: 78, next : -11916}, {key : 11, prev: 66, next : 22}
+
+Input :
+    array = (0, 2, 199, 11, 1, 66, 0, 199, -4, 11, 66, 66, 18, 78, -11916, 11, 66, 22)
+    array_len = 18
+
+Output : [-2, -11820] 
+
+Explanation :
+   updated dict values w/o duplicate keys :
+        - {key : 0, prev: 2, next : -4}, {key : 11, prev: 1, next : 22}, {key : 18, prev: 78, next : -11916}
+   dict values where (x=key, y=prev, z=next) satisfy the statement x**2 + y**3 + z : 
+        - {key : 0, prev: 2, next : -4}, {key : 18, prev: 78, next : -11916}
+   output : [ 2 + (-4), 18 + 78 + (-11916) ] 
